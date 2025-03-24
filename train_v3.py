@@ -448,7 +448,7 @@ def main():
         
         return best_model_path
     
-    best_model_path = train_model(model, criterion_cls, criterion_seg, optimizer, train_loader, val_loader, num_epochs=10, patience=5, warmup_epochs=5)
+    best_model_path = train_model(model, criterion_cls, criterion_seg, optimizer, train_loader, val_loader, num_epochs=10, patience=1, warmup_epochs=5)
     model.load_state_dict(torch.load(best_model_path, weights_only=True))
     
     def evaluate(model, test_loader):
@@ -470,7 +470,7 @@ def main():
                 with torch.enable_grad():
                     input_image = images[:1].clone().detach().requires_grad_(True)  # 确保梯度追踪
                     cam = grad_cam.generate(input_image, torch.argmax(labels[0]).item(), device, is_gradcam_plus=True)
-                    cam = cam[0, 0].detach.cpu().numpy()
+                    cam = cam[0, 0].detach().cpu().numpy()
                     cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)  # 规范化
                     heatmap = plt.cm.jet(cam)[:, :, :3]
         
